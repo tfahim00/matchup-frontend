@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  /* theme tokens (a subset from WEB_FRONTEND_SPEC.md) */
+  --color-background: #F7F8FA;
+  --color-surface: #FFFFFF;
+  --color-surface-variant: #EEF2F7;
+  --color-border: #E3E7EE;
+  --color-text-primary: #111827;
+  --color-text-secondary: #5B6475;
+  --color-primary: #2F6FED;
+  --color-primary-container: #EAF1FF;
+}
+
+html,body,#root{
+  height:100%;
+}
+body{
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.card{
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 16px;
+}
