@@ -1,27 +1,44 @@
-import * as mock from './mock'
+import { authFetch } from './client'
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || ''
 
-export async function fetchMatches(){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/matches`)
-    if(res.ok) return res.json()
+function requireApiBase() {
+  if (!API_BASE) {
+    throw new Error('VITE_API_BASE is not configured. Set the frontend API base URL before making requests.')
   }
-  return mock.fetchMatches()
+}
+
+export async function fetchMatches(){
+  requireApiBase()
+
+  const res = await authFetch(`${API_BASE}/api/matches`)
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || 'Failed to fetch matches')
 }
 
 export async function fetchMatchById(id:number){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/matches/${id}`)
-    if(res.ok) return res.json()
-  }
-  return mock.fetchMatchById(id)
+  requireApiBase()
+
+  const res = await authFetch(`${API_BASE}/api/matches/${id}`)
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || `Failed to fetch match ${id}`)
 }
 
 export async function createMatch(payload:any){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/matches`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)})
-    if(res.ok) return res.json()
-  }
-  return mock.createMatch(payload)
+  requireApiBase()
+
+  const res = await authFetch(`${API_BASE}/api/matches`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  })
+
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || 'Failed to create match')
 }

@@ -1,10 +1,17 @@
-import * as mock from './mock'
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || ''
 
-export async function fetchLocations(){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/locations`)
-    if(res.ok) return res.json()
+function requireApiBase() {
+  if (!API_BASE) {
+    throw new Error('VITE_API_BASE is not configured. Set the frontend API base URL before making requests.')
   }
-  return mock.fetchLocations()
+}
+
+export async function fetchLocations(){
+  requireApiBase()
+
+  const res = await fetch(`${API_BASE}/api/locations`)
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || 'Failed to fetch locations')
 }

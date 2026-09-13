@@ -1,18 +1,29 @@
-import * as mock from './mock'
+import { authFetch } from './client'
+
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || ''
 
-export async function fetchTeams(){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/teams`)
-    if(res.ok) return res.json()
+function requireApiBase() {
+  if (!API_BASE) {
+    throw new Error('VITE_API_BASE is not configured. Set the frontend API base URL before making requests.')
   }
-  return mock.fetchTeams()
+}
+
+export async function fetchTeams(){
+  requireApiBase()
+
+  const res = await authFetch(`${API_BASE}/api/teams`)
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || 'Failed to fetch teams')
 }
 
 export async function fetchTeamById(id:number){
-  if(API_BASE){
-    const res = await fetch(`${API_BASE}/api/teams/${id}`)
-    if(res.ok) return res.json()
-  }
-  return mock.fetchTeamById(id)
+  requireApiBase()
+
+  const res = await authFetch(`${API_BASE}/api/teams/${id}`)
+  if (res.ok) return res.json()
+
+  const data = await res.json().catch(() => ({}))
+  throw new Error(data.message || `Failed to fetch team ${id}`)
 }

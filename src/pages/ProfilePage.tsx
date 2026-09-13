@@ -1,15 +1,25 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { Navigate, useParams } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { fetchProfile } from '../lib/api/profile'
 
 export default function ProfilePage(){
-  // for demo we'll assume userId 1
-  const userId = 1
-  const {data,isLoading,error,refetch} = useQuery(['profile', userId], ()=>fetchProfile(userId))
+  const { id } = useParams()
+  const { user } = useAuth()
+  console.log('user:', user)
+  const profileId = id ? Number(id) : user?.id ?? 1
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['profile', profileId],
+    queryFn: () => fetchProfile(profileId),
+    enabled: !!profileId,
+    retry: false,
+  })
 
   if(isLoading) return <div>Loading profile...</div>
   if(error) return <div className="card">Error loading profile</div>
-  if(!data) return <div className="card">Set up your profile</div>
+  if(!data) return <Navigate to="/profile/edit" replace state={{ from: location.pathname }} />
 
   return (
     <div className="max-w-2xl mx-auto">

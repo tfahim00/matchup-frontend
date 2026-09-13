@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
-import { sendResetLink } from '../lib/api/mock'
+import { sendResetLink } from '../lib/api/auth'
 import { Link } from 'react-router-dom'
+import Input from '../components/Input'
+import Button from '../components/Button'
 
 export default function ForgotPasswordPage(){
   const [email,setEmail] = useState('')
@@ -28,14 +30,14 @@ export default function ForgotPasswordPage(){
         <p className="text-sm text-slate-600 mb-3">Enter your email and we'll send a reset link.</p>
         {error && <div className="mb-3 text-red-600">{error}</div>}
         {success && <div className="mb-3 text-green-700">{success}</div>}
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} className="space-y-6">
           <div>
             <label className="block text-sm text-slate-600">Email</label>
-            <input value={email} onChange={e=>setEmail(e.target.value)} className="input mt-1" type="email" />
+            <Input value={email} onChange={e=>setEmail(e.target.value)} type="email" />
           </div>
           <div className="flex items-center justify-between">
-            <Link to="/login" className="text-sm text-slate-600">Back to log in</Link>
-            <button disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded">{loading? 'Sending...':'Send reset link'}</button>
+            <Link to="/login" className="text-sm text-[#2F6FED]">Back to log in</Link>
+            <Button type="submit" className="px-5 h-12 rounded-[12px]" variant="primary" disabled={loading}>{loading? 'Sending...':'Send reset link'}</Button>
           </div>
         </form>
       </div>
