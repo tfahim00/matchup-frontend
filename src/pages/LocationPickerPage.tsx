@@ -4,7 +4,10 @@ import { fetchLocations } from '../lib/api/locations'
 import { useNavigate } from 'react-router-dom'
 
 export default function LocationPickerPage(){
-  const {data,isLoading,error} = useQuery(['locations'], fetchLocations)
+  const { data = [], isLoading, error } = useQuery({
+    queryKey: ['locations'],
+    queryFn: fetchLocations,
+  })
   const nav = useNavigate()
 
   if(isLoading) return <div>Loading locations...</div>
